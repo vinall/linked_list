@@ -351,9 +351,9 @@ _find_loopy_list_palindrome(shared_ptr<Node> head, shared_ptr<Node> start_node) 
 
 void 
 find_loop_list_palindrome() {
-	LinkedList myList({1,2,3,2,8,1});
+	LinkedList myList({1,2,3,2,8});
 	auto head = myList.getHead();
-	head->next->next->next->next->next->next = head->next->next; 
+	head->next->next->next->next->next = head->next->next; 
 	auto loopy_node = find_loop(head);
 	std::cout << "loop_node = " << loopy_node->data << std::endl;
 	auto start_node = find_loop_start_node(head,loopy_node);
@@ -365,8 +365,59 @@ find_loop_list_palindrome() {
 		std::cout << "not palindrome\n";
 }
 
+void
+delete_nodes(shared_ptr<Node> start,shared_ptr<Node> end) {
+	shared_ptr<Node> temp;
+	while(start->next!=end) {
+		temp = start;
+		start = start->next;
+		temp.reset();
+	}
+}
+shared_ptr<Node>
+_remove_all_duplicate_occurence(shared_ptr<Node> head) {
+	shared_ptr<Node> tempHead = head;
+	shared_ptr<Node> newHead = head;
+	shared_ptr<Node> first = nullptr , second = nullptr , prev = nullptr;
+	bool moveHeadToSecond = false;
+	while(tempHead != nullptr && tempHead->next != nullptr) {
+		first = tempHead;
+		second = tempHead->next;
+		while(second != nullptr && first->data == second->data){
+			if(first == newHead)
+				moveHeadToSecond = true;
+			second = second->next;
+		}
+		if(moveHeadToSecond) {
+			newHead = second;
+			moveHeadToSecond = false;
+		}
+		std::cout << first->data << " " << second->data << std::endl;
+		if(prev != nullptr)
+			prev->next = second;
+		else
+			prev = first;
+		tempHead = second;
+	}	
+	return newHead;
+}
+
+void
+remove_all_duplicate_occurence() {
+	//LinkedList myList({23,28,28,28,39,39,40});
+	LinkedList myList({40,39,39,39,28,28,23,23});
+	auto head = myList.getHead();
+	auto newHead = _remove_all_duplicate_occurence(head);
+	myList.getHead() = newHead;
+	std::cout << "remove_all_duplicate_occurence - " << std::endl;
+	myList.display();
+	std::cout << "=================================" << std::endl;
+}
+
 int 
 main() {
+	std::cout << "remove_all_duplicate_occurence\n";
+	remove_all_duplicate_occurence();
 	std::cout << "fnd_loop_list_palindrome \n";
 	find_loop_list_palindrome();
 	char ch;
